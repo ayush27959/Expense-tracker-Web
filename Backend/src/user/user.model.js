@@ -1,0 +1,49 @@
+import {model, Schema} from 'mongoose';
+import bcrypt from "bcrypt"
+const userschema=new Schema({
+fullname:{
+    type:String,
+    required:true,
+    lowercase:true,
+    trim:true
+},
+mobile:{
+    type:String,
+    required:true,
+    trim:true
+},
+email:{
+    type:String,
+    required:true,
+    trim:true,
+      unique:true
+},
+password:{
+    type:String,
+    required:true,
+    trim:true
+},
+status:{
+    type:Boolean,
+   default:false
+
+},
+role:{
+    type:String,
+    default:"user",
+    required:true,
+    trim: true,
+    enum: ["user"]
+
+}
+
+},{timestamps:true});
+userschema.pre('save',async function(next){
+const hashedPass= await bcrypt.hash(this.password.toString(),12);
+this.password=hashedPass;
+next();
+
+});
+
+const UserModel=model('User',userschema);
+export default UserModel;
