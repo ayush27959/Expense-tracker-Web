@@ -45,12 +45,12 @@ export const sendEmail = async (req, res) => {
   }
 };
 
-// Helper: Generate Token
+// Helper: Generate Token (Fixed: Removed string quotes from object properties)
 const createToken = async (user) => {
   const payload = {
     id: user._id,
-    fullname: "user.fullname",
-    email: "user.email",
+    fullname: user.fullname,
+    email: user.email,
     role: user.role,
   };
 
@@ -110,7 +110,7 @@ export const logout = async (req, res) => {
   }
 };
 
-// 5. Forgot Password (Fixed Live Server Error)
+// 5. Forgot Password
 export const ForgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -126,14 +126,12 @@ export const ForgotPassword = async (req, res) => {
 
     const link = `${process.env.DOMAIN}/forgot-password?token=${token}`;
 
-    // ईमेल भेजने की प्रोसेस (अगर ये फेल होगी, तो सीधे catch ब्लॉक में एरर जाएगा)
     await sendMail(
       email,
       "Password Reset Link ?",
       forgotPasswordTemplate(user.fullname, link)
     );
 
-    // सफलता का रिस्पांस
     res.json({
       message: "Email sent successfully , Please check your email ",
     });
@@ -142,25 +140,46 @@ export const ForgotPassword = async (req, res) => {
   }
 };
 
-// 6. Verify Token
+// 6. Verify Token (Fixed: Added verification logic and returns userId)
 export const verifyToken = async (req, res) => {
   try {
-    res.status(200).json({ message: "Verified successfully" });
+    const { token } = req.query; // URL se token nikalne ke liye
+
+    if (!token) {
+      return res.status(400).json({ message: "Token is required" });
+    }
+
+    // Token verify aur decode karega
+    const decoded = jwt.verify(token, process.env.FORGOT_TOKEN_SECRET);
+
+    // Frontend ko success message aur userId bhejega
+    res.status(200).json({ 
+      message: "Verified successfully", 
+      userId: decoded.id 
+    });
   } catch (error) {
     res.status(401).json({ message: "Invalid or expired token" });
   }
 };
 
-// 7. Change Password
+// 7. Change Password (Fixed: req.user dependency removed, uses userId from body)
 export const changePassword = async (req, res) => {
   try {
-    const { password } = req.body;
+    const { password, userId } = req.body;
+
+    if (!userId || !password) {
+      return res.status(400).json({ message: "User ID and password are required" });
+    }
 
     const encryptedPassword = await bcrypt.hash(password.toString(), 12);
 
-    await UserModel.findByIdAndUpdate(req.user.id, {
+    const updatedUser = await UserModel.findByIdAndUpdate(userId, {
       password: encryptedPassword,
-    });
+    }, { new: true });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     res.status(200).json({ message: "Password changed successfully" });
   } catch (error) {

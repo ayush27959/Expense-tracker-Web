@@ -68,7 +68,7 @@ const Homelayout = ({ children }) => {
             <h3 className="text-white text-xl font-semibold mb-3">
               Contact
             </h3>
-            <p className="text-white/90">ayushkumar27959@gmail.com</p>
+            <p className="text-white/90">expensetracker.support@gmail.com</p>
             <p className="text-white/90 mt-2">+91 7079919201</p>
           </div>
         </div>
