@@ -21,13 +21,16 @@ mongoose.connect(process.env.DB_URL)
 
 app.use(cookieParser());
 
-// ✅ Fixed CORS: अब यह लोकल और वेंसल के दोनों लिंक्स को एक साथ अलाउ करेगा
+// ✅ Dynamic CORS Setup: अब यह वेंसल के सभी Preview और Main लिंक्स को ऑटोमैटिकली अलाउ करेगा
 app.use(cors({
-  origin: [
-    "http://localhost:5173", 
-    "https://expense-tracker-web-git-master-ayush-kumar-s-projects6.vercel.app",
-    "https://expense-tracker-web-pearl.vercel.app"
-  ],
+  origin: function (origin, callback) {
+    // बिना ऑरिजिन (जैसे Postman) या लोकलहोस्ट या कोई भी वेंसल सबडोमेन (.vercel.app) हो तो अलाउ करें
+    if (!origin || origin.startsWith("http://localhost") || origin.endsWith(".vercel.app")) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
 }));
 
