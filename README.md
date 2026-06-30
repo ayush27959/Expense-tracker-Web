@@ -2,7 +2,7 @@
 
 A modern, fast, and intuitive web application designed to help users track their daily income and expenses, manage budgets, and visualize financial habits. Built using **React**, **Vite**, and enhanced with the latest **React Compiler**.
 
-🚀 **Live Demo:** [View Live App](https://expense-tracker-web-pearl.vercel.app/home)
+🚀 **Live Demo:** [View Live App](https://expense-tracker-web-pearl.vercel.app/)
 
 ---
 
