@@ -1,18 +1,41 @@
-# React + Vite
+# 💰 Expense Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, fast, and intuitive web application designed to help users track their daily income and expenses, manage budgets, and visualize financial habits. Built using **React**, **Vite**, and enhanced with the latest **React Compiler**.
 
-Currently, two official plugins are available:
+🚀 **Live Demo:** [View Live App](https://expense-tracker-web-pearl.vercel.app/home)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- **📊 Visual Dashboard:** Real-time analytics and charts showing income vs. expense distributions.
+- **💸 Transaction Management:** Easily add, edit, and delete income and expense items.
+- **🏷️ Categorization:** Tag transactions with specific categories (e.g., Food, Rent, Salary, Entertainment) for better tracking.
+- **⚡ Lightning Fast:** Built on Vite with Hot Module Replacement (HMR) for a seamless user experience.
+- **🔋 React Compiler Powered:** Leverages automatic memoization for optimized rendering and performance.
 
-Note: This will impact Vite dev & build performances.
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Frontend:** React 19 / 18
+- **Build Tool:** Vite
+- **Styling:** *[Add your styling tool here, e.g., Tailwind CSS / Styled Components / CSS Modules]*
+- **State Management:** *[Add your state management here, e.g., Context API / Redux Toolkit / Zustand]*
+
+---
+
+## 🚀 Getting Started
+
+Follow these steps to set up the project locally on your machine.
+
+### Prerequisites
+
+Make sure you have **Node.js** (v18.0.0 or higher) and **npm** installed.
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/your-username/expense-tracker.git](https://github.com/your-username/expense-tracker.git)
+   cd expense-tracker
