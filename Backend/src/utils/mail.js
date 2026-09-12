@@ -1,45 +1,36 @@
-import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import dns from "node:dns";
 
 dotenv.config();
-dns.setDefaultResultOrder("ipv4first");
-
-// Transporter ko function ke bahar rakho taaki har request par re-connect na karna pade
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  family: 4,
-  port: 587,
-  secure: false,
-  requireTLS: true,
-  auth: {
-    user: process.env.SENDER_EMAIL,
-    pass: process.env.SENDER_PASSWORD,
-  },
-  pool: true,
-  maxConnections: 3,
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 10000,
-});
 
 export const sendMail = async (email, subject, template) => {
   try {
-    if (!process.env.SENDER_EMAIL || !process.env.SENDER_PASSWORD) {
-      throw new Error("SENDER_EMAIL and SENDER_PASSWORD are required");
+    if (!process.env.RESEND_API_KEY || !process.env.SENDER_EMAIL) {
+      throw new Error("RESEND_API_KEY and SENDER_EMAIL are required");
     }
 
-    const options = {
-      from: `"Expense Tracker" <${process.env.SENDER_EMAIL}>`,
-      to: email,
-      subject: subject,
-      html: template,
-    };
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: `Expense Tracker <${process.env.SENDER_EMAIL}>`,
+        to: [email],
+        subject,
+        html: template,
+      }),
+      signal: AbortSignal.timeout(10000),
+    });
 
-    await transporter.sendMail(options);
+    if (!response.ok) {
+      const details = await response.text();
+      throw new Error(`Resend API ${response.status}: ${details}`);
+    }
+
     return true;
   } catch (error) {
-    console.error("Nodemailer Send Error:", error);
+    console.error("Email Send Error:", error);
     throw new Error(`Email could not be sent: ${error.message}`);
   }
 };
