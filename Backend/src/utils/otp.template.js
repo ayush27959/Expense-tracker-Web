@@ -1,15 +1,11 @@
-// import { generateOTP } from "./generate.otp.js";
-export const otpTemplate =(otp)=>{
-    return `
-    <!DOCTYPE html>
+export const otpTemplate = (otp) => {
+  return `
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Your OTP Code</title>
-  <style>
-    /* Email clients often ignore <style> tags, so use inline CSS for safety */
-  </style>
 </head>
 <body style="margin:0; padding:0; background-color:#f4f6f8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
   <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="padding:40px 0;">
@@ -19,7 +15,6 @@ export const otpTemplate =(otp)=>{
           <!-- Header -->
           <tr>
             <td align="center" style="background:#007bff; color:#ffffff; padding:20px 0;">
-    
               <h2 style="margin:0; font-size:22px;">🔐 Secure Verification</h2>
             </td>
           </tr>
@@ -33,14 +28,14 @@ export const otpTemplate =(otp)=>{
               </p>
 
               <div style="font-size:32px; letter-spacing:8px; margin:25px 0; color:#007bff; font-weight:bold;">
-                {{${otp}}}
+                ${otp}
               </div>
 
               <p style="font-size:14px; color:#888;">
                 Please do not share this code with anyone for security reasons.
               </p>
-              <p>
-              This OTP is sent by Ayush Kumar—please enter it to complete your verification process.
+              <p style="font-size:13px; color:#555;">
+                This OTP is sent by Expense Tracker. Enter it to complete your verification process.
               </p>
             </td>
           </tr>
@@ -48,8 +43,7 @@ export const otpTemplate =(otp)=>{
           <!-- Footer -->
           <tr>
             <td align="center" style="background:#f8f9fa; padding:15px; font-size:12px; color:#999999;">
-              © 2025 Your Company Name. All rights reserved.<br>
-              Need help? <a href="#" style="color:#007bff; text-decoration:none;">Contact Support</a>
+              © 2026 Expense Tracker. All rights reserved.
             </td>
           </tr>
         </table>
@@ -58,8 +52,5 @@ export const otpTemplate =(otp)=>{
   </table>
 </body>
 </html>
-Displaying email.template.html.
-    `;
-        
-    
-}
+  `;
+};
