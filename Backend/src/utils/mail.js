@@ -1,7 +1,9 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import dns from "node:dns";
 
 dotenv.config();
+dns.setDefaultResultOrder("ipv4first");
 
 // Transporter ko function ke bahar rakho taaki har request par re-connect na karna pade
 const transporter = nodemailer.createTransport({
