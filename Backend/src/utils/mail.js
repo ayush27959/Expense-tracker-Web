@@ -1,36 +1,25 @@
-import dotenv from "dotenv";
-
-dotenv.config();
-
+import nodemailer from"nodemailer";
 export const sendMail = async (email, subject, template) => {
   try {
-    if (!process.env.RESEND_API_KEY || !process.env.SENDER_EMAIL) {
-      throw new Error("RESEND_API_KEY and SENDER_EMAIL are required");
-    }
-
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: `Expense Tracker <${process.env.SENDER_EMAIL}>`,
-        to: [email],
-        subject,
-        html: template,
-      }),
-      signal: AbortSignal.timeout(10000),
+    const config = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.SENDER_EMAIL,
+        pass: process.env.SENDER_PASSWORD,
+      }
     });
 
-    if (!response.ok) {
-      const details = await response.text();
-      throw new Error(`Resend API ${response.status}: ${details}`);
-    }
+    const options = {
+      from: process.env.SENDER_EMAIL,
+      to: email,
+      subject: subject,
+      html: template
+    };
 
+    await config.sendMail(options);
     return true;
+
   } catch (error) {
-    console.error("Email Send Error:", error);
-    throw new Error(`Email could not be sent: ${error.message}`);
+    return false;
   }
 };
