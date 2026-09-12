@@ -6,6 +6,7 @@ dotenv.config();
 // Transporter ko function ke bahar rakho taaki har request par re-connect na karna pade
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
+  family: 4,
   port: 587,
   secure: false,
   requireTLS: true,
