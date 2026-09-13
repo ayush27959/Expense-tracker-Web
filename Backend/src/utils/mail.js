@@ -1,25 +1,20 @@
 import nodemailer from"nodemailer";
 export const sendMail = async (email, subject, template) => {
-  try {
-    const config = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.SENDER_EMAIL,
-        pass: process.env.SENDER_PASSWORD,
-      }
-    });
+  const config = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.SENDER_EMAIL,
+      pass: process.env.SENDER_PASSWORD,
+    },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
+  });
 
-    const options = {
-      from: process.env.SENDER_EMAIL,
-      to: email,
-      subject: subject,
-      html: template
-    };
-
-    await config.sendMail(options);
-    return true;
-
-  } catch (error) {
-    return false;
-  }
+  await config.sendMail({
+    from: process.env.SENDER_EMAIL,
+    to: email,
+    subject,
+    html: template,
+  });
 };

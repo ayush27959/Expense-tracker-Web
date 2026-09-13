@@ -64,9 +64,14 @@ export const sendEmail = async (req, res) => {
 
 
 
-    await sendMail(email, "OTP for Signup", otpTemplate(OTP));
-
-
+    try {
+      await sendMail(email, "OTP for Signup", otpTemplate(OTP));
+    } catch (mailError) {
+      console.error("Signup OTP email failed:", mailError.message);
+      return res.status(502).json({
+        message: "OTP email could not be sent. Please try again later.",
+      });
+    }
 
     res.json({
 
@@ -225,84 +230,48 @@ export const logout = async (req, res) => {
 // 5. Forgot Password (Fixed Live Server Error)
 
 export const ForgotPassword = async (req, res) => {
-
   try {
-
     const { email } = req.body;
-
-
-
-    const user = await UserModel.findOne({ email: email });
-
+    const user = await UserModel.findOne({ email });
     if (!user) return res.status(404).json({ message: "user not found " });
 
-
-
     const token = await jwt.sign(
-
       { id: user._id },
-
       process.env.FORGOT_TOKEN_SECRET,
-
       { expiresIn: "15m" }
-
     );
-
-
-
     const link = `${process.env.DOMAIN}/forgot-password?token=${token}`;
 
-
-
-    // ईमेल भेजने की प्रोसेस (अगर ये फेल होगी, तो सीधे catch ब्लॉक में एरर जाएगा)
-
-    await sendMail(
-
-      email,
-
-      "Password Reset Link ?",
-
-      forgotPasswordTemplate(user.fullname, link)
-
-    );
-
-
-
-    // सफलता का रिस्पांस
+    try {
+      await sendMail(
+        email,
+        "Password Reset Link ?",
+        forgotPasswordTemplate(user.fullname, link)
+      );
+    } catch (mailError) {
+      console.error("Password reset email failed:", mailError.message);
+      return res.status(502).json({
+        message: "Reset email could not be sent. Please try again later.",
+      });
+    }
 
     res.json({
-
       message: "Email sent successfully , Please check your email ",
-
     });
-
   } catch (error) {
-
     res.status(500).json({ message: error.message });
-
   }
-
 };
-
-
 
 // 6. Verify Token
 
 export const verifyToken = async (req, res) => {
-
   try {
-
     res.status(200).json({ message: "Verified successfully" });
-
   } catch (error) {
-
     res.status(401).json({ message: "Invalid or expired token" });
-
   }
-
 };
-
-
 
 // 7. Change Password
 
