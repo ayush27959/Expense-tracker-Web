@@ -1,10 +1,32 @@
 import dotenv from "dotenv";
+import nodemailer from "nodemailer";
 
 dotenv.config();
 
 export const sendMail = async (email, subject, template) => {
-  if (!process.env.RESEND_API_KEY || !process.env.SENDER_EMAIL) {
-    throw new Error("RESEND_API_KEY and SENDER_EMAIL are required");
+  if (!process.env.SENDER_EMAIL) {
+    throw new Error("SENDER_EMAIL is required");
+  }
+
+  if (!process.env.RESEND_API_KEY) {
+    const config = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.SENDER_EMAIL,
+        pass: process.env.SENDER_PASSWORD,
+      },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
+    });
+
+    await config.sendMail({
+      from: process.env.SENDER_EMAIL,
+      to: email,
+      subject,
+      html: template,
+    });
+    return;
   }
 
   const response = await fetch("https://api.resend.com/emails", {
