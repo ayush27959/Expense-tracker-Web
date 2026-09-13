@@ -1,23 +1,29 @@
-import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 export const sendMail = async (email, subject, template) => {
-  const config = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    requireTLS: true,
-    auth: {
-      user: process.env.SENDER_EMAIL,
-      pass: process.env.SENDER_PASSWORD,
+  if (!process.env.RESEND_API_KEY || !process.env.SENDER_EMAIL) {
+    throw new Error("RESEND_API_KEY and SENDER_EMAIL are required");
+  }
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
     },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
+    body: JSON.stringify({
+      from: `Expense Tracker <${process.env.SENDER_EMAIL}>`,
+      to: [email],
+      subject,
+      html: template,
+    }),
+    signal: AbortSignal.timeout(10000),
   });
 
-  await config.sendMail({
-    from: process.env.SENDER_EMAIL,
-    to: email,
-    subject,
-    html: template,
-  });
+  if (!response.ok) {
+    const details = await response.text();
+    throw new Error(`Resend API ${response.status}: ${details}`);
+  }
 };
